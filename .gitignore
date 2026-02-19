@@ -4,3 +4,7 @@ dbt_packages/
 logs/
 dbt_internal_packages/
 *.duckdb
+*.duckdb.wal
+
+# Service account keys - NEVER push to GitHub
+*.json

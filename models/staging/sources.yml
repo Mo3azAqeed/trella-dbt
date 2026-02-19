@@ -2,11 +2,10 @@ version: 2
 
 sources:
   - name: raw_csv
-    schema: raw_csv
+    schema: Logistics
     tables:
       - name: customers
       - name: delivery_events
-      - name: driver_monthly_metrics
       - name: drivers
       - name: facilities
       - name: fuel_purchases
@@ -16,5 +15,4 @@ sources:
       - name: safety_incidents
       - name: trailers
       - name: trips
-      - name: truck_utilization_metrics
       - name: trucks

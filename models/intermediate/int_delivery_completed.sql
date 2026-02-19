@@ -1,7 +1,6 @@
 {{
     config(
-        materialized='incremental',
-        incremental_strategy='append',
+        materialized='table',
         schema='intermediate'
     )
 }}
@@ -30,7 +29,7 @@ SELECT
 
     -- Delivery variance in hours (positive = late, negative = early)
     ROUND(
-        EXTRACT(EPOCH FROM (de.actual_datetime - de.scheduled_datetime)) / 3600.0,
+        TIMESTAMP_DIFF(de.actual_datetime, de.scheduled_datetime, SECOND) / 3600.0,
         2
     ) AS delivery_variance_hours,
 
