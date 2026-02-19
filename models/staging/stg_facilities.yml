@@ -1,0 +1,28 @@
+version: 2
+models:
+  - name: stg_facilities
+    description: "Staging model for facilities data"
+    columns:
+      - name: facility_id
+        description: "Unique identifier for each facility"
+        tests:
+          - unique
+          - not_null  
+      - name: facility_name
+        description: "Name of the facility"
+      - name: facility_type
+        description: "Type of facility (e.g., warehouse, terminal)"
+      - name: city
+        description: "City where the facility is located"
+      - name: state
+        description: "State where the facility is located"
+      - name: latitude
+        description: "Latitude coordinate of the facility"
+      - name: longitude
+        description: "Longitude coordinate of the facility"
+      - name: dock_doors
+        description: "Number of dock doors available at the facility"
+      - name: operating_hours
+        description: "Operating hours of the facility (e.g., 8 AM - 5 PM)"
+
+      

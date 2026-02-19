@@ -1,0 +1,128 @@
+version: 2
+# Event Description: Driver arrives at origin and begins the journey.
+# Fire At: Triggered when a Pickup event is recorded in delivery_events.
+# This is the base model for the event_trip_started event table.
+models:
+  - name: int_trip_started
+    description: "Event: Driver arrives at origin and begins the journey. Represents the start of variable costs."
+    columns:
+
+      - name: trip_id
+        description: "The unique journey identifier."
+        tests:
+          - unique:
+              severity: error
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_trips')
+              field: trip_id
+              severity: error
+
+      - name: created_at
+        description: "Actual datetime of the pickup event. This is when the driver physically arrived at origin and started the trip."
+        tests:
+          - not_null:
+              severity: error
+          - datetime:
+              severity: error
+
+      - name: load_id
+        description: "The freight load being transported. Used to link this trip to the load details."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_loads')
+              field: load_id
+              severity: error
+
+      - name: route_id
+        description: "The planned route for the trip. Used to link to route details and calculate planned costs."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_routes')
+              field: route_id
+              severity: error
+
+      - name: driver_id
+        description: "The human operator assigned to this trip. Used to link Safety Incidents and driver metrics."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_drivers')
+              field: driver_id
+              severity: error
+
+      - name: truck_id
+        description: "The power unit used for this trip. Used to link Fuel and Maintenance costs."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_trucks')
+              field: truck_id
+              severity: error
+
+      - name: trailer_id
+        description: "The cargo container attached to the truck. Used for yard inventory tracking."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_trailers')
+              field: trailer_id
+              severity: error
+
+      - name: origin_facility_id
+        description: "The pickup facility where the trip started."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_facilities')
+              field: facility_id
+              severity: error
+
+      - name: origin_city
+        description: "City of the pickup facility."
+
+      - name: origin_state
+        description: "State of the pickup facility."
+
+      - name: potential_revenue
+        description: "Base linehaul revenue from stg_loads. EXCLUDES fuel surcharge, accessorials, and detention. Represents the pure haul earnings before variable costs."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error
+
+      - name: estimated_arrival_at
+        description: "Scheduled delivery datetime from the Delivery event. Used to measure on-time performance at destination."
+        tests:
+          - datetime:
+              severity: error
+
+      - name: actual_arrival_at
+        description: "Actual delivery datetime from the Delivery event. Compare with estimated_arrival_at to evaluate delivery punctuality."
+        tests:
+          - datetime:
+              severity: error
+
+      - name: pickup_detention_minutes
+        description: "Minutes the driver waited at the origin facility beyond free time. High values indicate shipper inefficiency."
+        tests:
+          - integer:
+              severity: error
+
+      - name: is_pickup_on_time
+        description: "Flag indicating whether the pickup occurred on time (True) or was late (False). Key KPI for dispatch reliability."
+        tests:
+          - not_null:
+              severity: error
+          - boolean:
+              severity: error

@@ -1,0 +1,26 @@
+version: 2
+models:
+  - name: stg_routes
+    description: "Staging model for routes data"
+    columns:
+      - name: route_id
+        description: "Unique identifier for each route"
+        tests:
+          - unique
+          - not_null  
+      - name: origin_city
+        description: "City where the route originates"
+      - name: origin_state
+        description: "State where the route originates"
+      - name: destination_city
+        description: "City where the route terminates"
+      - name: destination_state
+        description: "State where the route terminates"
+      - name: typical_distance_miles
+        description: "Typical distance of the route in miles"
+      - name: base_rate_per_mile
+        description: "Base rate per mile for the route"
+      - name: fuel_surcharge_rate
+        description: "Fuel surcharge rate for the route"
+      - name: typical_transit_days
+        description: "Typical transit time in days for the route"

@@ -1,0 +1,32 @@
+version: 2
+models:
+  - name: stg_maintenance_records
+    description: "Staging model for maintenance records data"
+    columns:
+      - name: maintenance_id
+        description: "Unique identifier for each maintenance record"
+        tests:
+          - unique
+          - not_null  
+      - name: truck_id
+        description: "Identifier for the truck associated with the maintenance record"
+      - name: maintenance_date
+        description: "Date when the maintenance was performed"
+      - name: maintenance_type
+        description: "Type of maintenance performed (e.g., oil change, tire rotation)"
+      - name: odometer_reading
+        description: "Odometer reading at the time of maintenance"
+      - name: labor_hours
+        description: "Number of labor hours spent on the maintenance"
+      - name: labor_cost
+        description: "Cost of labor for the maintenance"
+      - name: parts_cost
+        description: "Cost of parts used in the maintenance"
+      - name: total_cost
+        description: "Total cost of the maintenance record"
+      - name: facility_location
+        description: "Location where the maintenance was performed"
+      - name: downtime_hours
+        description: "Number of hours the truck was out of service due to maintenance"
+      - name: service_description
+        description: "Description of the service performed"

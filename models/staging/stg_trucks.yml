@@ -1,0 +1,56 @@
+version: 2
+
+models:
+  - name: stg_trucks
+    description: "Staging model for trucks data"
+    columns:
+      - name: truck_id
+        description: "Unique identifier for each truck"
+        tests:
+          - not_null
+          - unique
+      - name: unit_number
+        description: "Unit number of the truck"
+        tests:
+          - not_null
+      - name: make
+        description: "Make of the truck (e.g., Volvo, Freightliner)"
+        tests:
+          - not_null
+      - name: model
+        description: "Model of the truck (e.g., VNL, Cascadia)"
+        tests:
+          - not_null    
+      - name: vin
+        description: "Vehicle Identification Number of the truck"
+        tests:
+          - not_null
+      - name: acquisition_date
+        description: "Date when the truck was acquired"
+        tests:
+          - not_null
+          - date
+      - name: fuel_type
+        description: "Type of fuel used by the truck (e.g., Diesel, Electric)"
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Diesel', 'Electric']
+      - name: tank_capacity_gallons
+        description: "Fuel tank capacity of the truck in gallons"
+        tests:
+          - not_null
+          - numeric
+      - name: status
+        description: "Operational status of the truck (e.g., Active, Inactive, Maintenance)"
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Active', 'Inactive', 'Maintenance']
+      - name: home_terminal
+        description: "Home terminal location of the truck"
+        tests:
+          - not_null
+      

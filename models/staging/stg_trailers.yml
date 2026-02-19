@@ -1,0 +1,48 @@
+version: 2
+models:
+  - name: stg_trailers
+    description: "Staging model for trailers data, transforming raw trailer records into a clean format for analysis."
+    columns:
+      - name: trailer_id
+        description: "Unique identifier for each trailer."
+        tests:
+          - unique
+          - not_null
+      - name: trailer_number
+        description: "Number assigned to the trailer."
+        tests:
+          - not_null
+      - name: trailer_type
+        description: "Type of the trailer (e.g., flatbed, refrigerated)."
+        tests:
+          - not_null
+      - name: length_feet
+        description: "Length of the trailer in feet."
+        tests:
+          - not_null
+          - numeric
+      - name: model_year
+        description: "Model year of the trailer."
+        tests:
+          - not_null  
+          - numeric
+      - name: vin
+        description: "Vehicle Identification Number of the trailer."
+        tests:
+          - not_null  
+      - name: acquisition_date
+        description: "Date when the trailer was acquired."
+        tests:
+          - not_null  
+          - date
+      - name: status
+        description: "Current status of the trailer (e.g., active, inactive, maintenance)."
+        tests:
+          - not_null  
+          - accepted_values:
+              arguments:
+                values: ['Active', 'Inactive', 'Maintenance']
+      - name: current_location
+        description: "Current location of the trailer."
+        tests:
+          - not_null

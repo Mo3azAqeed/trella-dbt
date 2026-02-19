@@ -1,0 +1,59 @@
+version: 2
+
+models:
+  - name: stg_delivery_events
+    description: "Staging model for delivery events data"
+    columns:
+      - name: event_id
+        description: "Unique identifier for each delivery event"
+        tests:
+          - not_null
+          - unique
+      - name: load_id
+        description: "Identifier for the load associated with the delivery event"
+        tests:
+          - not_null
+
+      - name: trip_id
+        description: "Identifier for the trip associated with the delivery event"
+        tests:
+          - not_null
+      - name: event_type
+        description: "Type of delivery event (e.g., Pickup, Delivery)"
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Pickup', 'Delivery']
+      - name: facility_id
+        description: "Identifier for the facility associated with the delivery event"
+        tests:
+          - not_null
+      - name: scheduled_datetime
+        description: "Timestamp of the delivery event"
+        tests:
+          - not_null
+          - datetime
+      - name: actual_datetime
+        description: "Actual timestamp of the delivery event"
+        tests:
+          - not_null
+          - datetime
+      - name: detention_minutes
+        description: "Number of minutes of detention for the delivery event"
+        tests:
+          - not_null
+          - integer
+      - name: on_time_flag
+        description: "Flag indicating if the delivery event was on time (1) or not (0)"
+        tests:
+          - not_null
+          - boolean
+      - name: location_city
+        description: "City of the location of the delivery event"
+        tests:
+          - not_null
+      - name: location_state
+        description: "State of the location of the delivery event"
+        tests:
+          - not_null

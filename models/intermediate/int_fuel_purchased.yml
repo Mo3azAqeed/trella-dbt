@@ -1,0 +1,121 @@
+version: 2
+# Event Description: Fuel is purchased during a trip.
+# Fire At: Triggered on INSERT to FUEL_PURCHASES. Each purchase must be associated with a trip.
+# This model enriches the fuel purchase with trip and load context.
+models:
+  - name: int_fuel_purchased
+    description: "A fuel purchase is recorded for a trip. Each row represents a single fuel stop linked to its trip, truck, driver, and load."
+    columns:
+
+      - name: fuel_purchase_id
+        description: "Unique identifier for the fuel purchase transaction."
+        tests:
+          - unique:
+              severity: error
+          - not_null:
+              severity: error
+
+      - name: created_at
+        description: "Datetime when the fuel was purchased."
+        tests:
+          - not_null:
+              severity: error
+          - datetime:
+              severity: error
+
+      - name: trip_id
+        description: "The trip this fuel purchase belongs to. Every fuel purchase must be associated with a trip."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_trips')
+              field: trip_id
+              severity: error
+
+      - name: truck_id
+        description: "The truck that was fueled."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_trucks')
+              field: truck_id
+              severity: error
+
+      - name: driver_id
+        description: "The driver who made the fuel purchase."
+        tests:
+          - foreign_key:
+              to: ref('stg_drivers')
+              field: driver_id
+              severity: error
+
+      - name: fuel_city
+        description: "City where the fuel was purchased."
+
+      - name: fuel_state
+        description: "State where the fuel was purchased."
+
+      - name: gallons
+        description: "Number of gallons purchased."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error
+
+      - name: price_per_gallon
+        description: "Price per gallon at the time of purchase."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error
+
+      - name: fuel_cost
+        description: "Total cost of this fuel purchase (gallons × price_per_gallon)."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error
+
+      - name: fuel_card_number
+        description: "Fuel card used for the transaction."
+
+      - name: load_id
+        description: "The load being hauled on this trip."
+        tests:
+          - foreign_key:
+              to: ref('stg_loads')
+              field: load_id
+              severity: error
+
+      - name: actual_distance_miles
+        description: "Total miles driven on the associated trip."
+        tests:
+          - numeric:
+              severity: error
+
+      - name: actual_duration_hours
+        description: "Total hours the associated trip took."
+        tests:
+          - numeric:
+              severity: error
+
+      - name: customer_id
+        description: "The customer whose load was on this trip."
+        tests:
+          - foreign_key:
+              to: ref('stg_customers')
+              field: customer_id
+              severity: error
+
+      - name: route_id
+        description: "The route for the associated trip's load."
+        tests:
+          - foreign_key:
+              to: ref('stg_routes')
+              field: route_id
+              severity: error

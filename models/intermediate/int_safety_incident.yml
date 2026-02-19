@@ -1,0 +1,181 @@
+version: 2
+# Event Description: A safety incident occurs during a trip.
+# Fire At: Triggered on INSERT to SAFETY_INCIDENTS. Each incident must be associated with a trip.
+# This model enriches the incident with trip/load context and checks if the trip is still profitable after damage costs.
+models:
+  - name: int_safety_incident
+    description: "A safety incident is recorded for a trip. Enriched with trip and load context. Computes total damage cost and whether the trip remains profitable after the incident."
+    columns:
+
+      - name: incident_id
+        description: "Unique identifier for the safety incident."
+        tests:
+          - unique:
+              severity: error
+          - not_null:
+              severity: error
+
+      - name: created_at
+        description: "Datetime when the safety incident occurred."
+        tests:
+          - not_null:
+              severity: error
+          - datetime:
+              severity: error
+
+      - name: trip_id
+        description: "The trip during which this incident occurred. Every incident must belong to a trip."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_trips')
+              field: trip_id
+              severity: error
+
+      - name: truck_id
+        description: "The truck involved in the incident."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_trucks')
+              field: truck_id
+              severity: error
+
+      - name: driver_id
+        description: "The driver involved in the incident."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_drivers')
+              field: driver_id
+              severity: error
+
+      - name: incident_type
+        description: "Type of incident (e.g., Moving Violation, Accident, Near Miss, DOT Violation, Equipment Damage, Customer Complaint)."
+        tests:
+          - not_null:
+              severity: error
+
+      - name: incident_city
+        description: "City where the incident occurred."
+
+      - name: incident_state
+        description: "State where the incident occurred."
+
+      - name: at_fault_flag
+        description: "Whether the driver was at fault for the incident."
+        tests:
+          - not_null:
+              severity: error
+          - boolean:
+              severity: error
+
+      - name: injury_flag
+        description: "Whether injuries were reported in the incident."
+        tests:
+          - not_null:
+              severity: error
+          - boolean:
+              severity: error
+
+      - name: preventable_flag
+        description: "Whether the incident was preventable."
+        tests:
+          - not_null:
+              severity: error
+          - boolean:
+              severity: error
+
+      - name: description
+        description: "Free-text description of the incident."
+
+      - name: vehicle_damage_cost
+        description: "Cost of damage to the vehicle."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error
+
+      - name: cargo_damage_cost
+        description: "Cost of damage to the cargo."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error
+
+      - name: total_damage_cost
+        description: "Total damage cost: vehicle_damage_cost + cargo_damage_cost."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error
+
+      - name: claim_amount
+        description: "Total insurance claim amount filed for the incident."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error
+
+      - name: load_id
+        description: "The load being hauled during this trip."
+        tests:
+          - foreign_key:
+              to: ref('stg_loads')
+              field: load_id
+              severity: error
+
+      - name: actual_distance_miles
+        description: "Total miles driven on the associated trip."
+        tests:
+          - numeric:
+              severity: error
+
+      - name: actual_duration_hours
+        description: "Total hours the associated trip took."
+        tests:
+          - numeric:
+              severity: error
+
+      - name: customer_id
+        description: "The customer whose load was on this trip."
+        tests:
+          - foreign_key:
+              to: ref('stg_customers')
+              field: customer_id
+              severity: error
+
+      - name: route_id
+        description: "The route for the associated trip."
+        tests:
+          - foreign_key:
+              to: ref('stg_routes')
+              field: route_id
+              severity: error
+
+      - name: trip_total_revenue
+        description: "Total revenue for the trip (Base Revenue + Fuel Surcharge + Accessorials)."
+        tests:
+          - numeric:
+              severity: error
+
+      - name: revenue_after_damage
+        description: "Trip revenue minus total damage cost. Shows remaining revenue after accounting for the incident."
+        tests:
+          - numeric:
+              severity: error
+
+      - name: is_trip_still_profitable
+        description: "Whether the trip remains profitable after subtracting the damage cost from total revenue. True if revenue_after_damage > 0."
+        tests:
+          - not_null:
+              severity: error
+          - boolean:
+              severity: error

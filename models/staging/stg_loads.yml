@@ -1,0 +1,62 @@
+version: 2
+models:
+  - name: stg_loads
+    description: "Staging model for loads data, transforming raw load records into a clean format for analysis."
+    columns:
+      - name: load_id
+        description: "Unique identifier for each load."
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Identifier for the customer associated with the load."
+        tests:
+          - not_null
+      - name: route_id
+        description: "Identifier for the route associated with the load."
+        tests:
+          - not_null
+      - name: load_date
+        description: "Date when the load was scheduled or dispatched."
+        tests:
+          - not_null  
+          - date
+      - name: load_type
+        description: "Type of the load (e.g., full truckload, less than truckload)."
+        tests:
+          - not_null  
+      - name: weight_lbs
+        description: "Weight of the load in pounds."
+        tests:
+          - not_null  
+          - numeric
+      - name: pieces
+        description: "Number of pieces or items in the load."
+        tests:
+          - not_null  
+          - numeric
+      - name: revenue
+        description: "Revenue generated from the load."
+        tests:
+          - not_null  
+          - numeric
+      - name: fuel_surcharge
+        description: "Fuel surcharge applied to the load."
+        tests:
+          - not_null  
+          - numeric
+      - name: accessorial_charges
+        description: "Additional charges applied to the load (e.g., detention, layover)."
+        tests:
+          - not_null  
+          - numeric
+      - name: load_status
+        description: "Current status of the load (e.g., booked, in_transit, delivered)."
+        tests:
+          - not_null  
+      - name: booking_type
+        description: "Type of booking for the load (e.g., direct, brokered)."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['Spot', 'Dedicated']

@@ -1,0 +1,172 @@
+version: 2
+# Event Description: Freight is delivered at the destination facility.
+# Fire At: Triggered when a Delivery event is recorded in delivery_events.
+# This is the base model for the event_delivery_completed event table.
+models:
+  - name: int_delivery_completed
+    description: "Freight arrives at destination and is unloaded. Marks the completion of the haul and triggers receivables."
+    columns:
+
+      - name: load_id
+        description: "The shipment delivered."
+        tests:
+          - unique:
+              severity: error
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_loads')
+              field: load_id
+              severity: error
+
+      - name: created_at
+        description: "Actual datetime when the delivery occurred — the moment freight was handed off at destination."
+        tests:
+          - not_null:
+              severity: error
+          - datetime:
+              severity: error
+
+      - name: trip_id
+        description: "The journey that carried this load to its destination."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_trips')
+              field: trip_id
+              severity: error
+
+      - name: facility_id
+        description: "Where delivery happened. The destination facility."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_facilities')
+              field: facility_id
+              severity: error
+
+      - name: delivery_city
+        description: "City of the delivery facility."
+
+      - name: delivery_state
+        description: "State of the delivery facility."
+
+      - name: on_time_flag
+        description: "Did we meet the promise? True if actual delivery was on or before scheduled time."
+        tests:
+          - not_null:
+              severity: error
+          - boolean:
+              severity: error
+
+      - name: detention_mins
+        description: "Minutes spent waiting to unload at the destination facility."
+        tests:
+          - integer:
+              severity: error
+
+      - name: detention_cost
+        description: "Estimated cost of the wait (Driver Pay + Opportunity Cost). Calculated at ~$50/hr."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error
+
+      - name: scheduled_delivery_at
+        description: "Planned delivery datetime. The promise made to the customer."
+        tests:
+          - datetime:
+              severity: error
+
+      - name: actual_delivery_at
+        description: "Actual delivery datetime. When the driver physically arrived and unloaded."
+        tests:
+          - datetime:
+              severity: error
+
+      - name: delivery_variance_hours
+        description: "Hours between actual and scheduled delivery. Positive = late, Negative = early."
+        tests:
+          - numeric:
+              severity: error
+
+      - name: driver_id
+        description: "The driver who completed the delivery."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_drivers')
+              field: driver_id
+              severity: error
+
+      - name: truck_id
+        description: "The truck used for the delivery."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_trucks')
+              field: truck_id
+              severity: error
+
+      - name: trailer_id
+        description: "The trailer used for the delivery."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_trailers')
+              field: trailer_id
+              severity: error
+
+      - name: actual_distance_miles
+        description: "Actual miles driven for this trip. Used for cost-per-mile analysis."
+        tests:
+          - numeric:
+              severity: error
+
+      - name: actual_duration_hours
+        description: "Actual hours the trip took. Used for driver utilization analysis."
+        tests:
+          - numeric:
+              severity: error
+
+      - name: customer_id
+        description: "The customer who ordered this shipment."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_customers')
+              field: customer_id
+              severity: error
+
+      - name: route_id
+        description: "The planned route for this shipment."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_routes')
+              field: route_id
+              severity: error
+
+      - name: potential_revenue
+        description: "Base linehaul revenue (excludes fuel surcharge and accessorials)."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error
+
+      - name: financial_total
+        description: "Total invoice amount (Base + Fuel Surcharge + Accessorials). Top-line revenue for this delivery."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error

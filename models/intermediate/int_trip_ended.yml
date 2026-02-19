@@ -1,0 +1,172 @@
+version: 2
+# Event Description: A trip is fully completed — freight delivered and actual datetime confirmed.
+# Fire At: Triggered when DELIVERY_EVENTS has event_type='Delivery' AND actual_datetime IS NOT NULL.
+# This model computes total_cost (fuel + driver + detention) and total_profit (revenue - cost).
+models:
+  - name: int_trip_ended
+    description: "Trip is completed with confirmed delivery. Computes total cost and total profit for the trip."
+    columns:
+
+      - name: trip_id
+        description: "Unique Journey ID."
+        tests:
+          - unique:
+              severity: error
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_trips')
+              field: trip_id
+              severity: error
+
+      - name: created_at
+        description: "Actual datetime when the delivery occurred — the moment the trip ended."
+        tests:
+          - not_null:
+              severity: error
+          - datetime:
+              severity: error
+
+      - name: load_id
+        description: "The shipment that was delivered."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_loads')
+              field: load_id
+              severity: error
+
+      - name: facility_id
+        description: "Destination facility where delivery occurred."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_facilities')
+              field: facility_id
+              severity: error
+
+      - name: delivery_city
+        description: "City of the delivery facility."
+
+      - name: delivery_state
+        description: "State of the delivery facility."
+
+      - name: on_time_flag
+        description: "Whether the delivery was on time. True if actual delivery was on or before scheduled time."
+        tests:
+          - not_null:
+              severity: error
+          - boolean:
+              severity: error
+
+      - name: detention_minutes
+        description: "Minutes spent waiting to unload at the destination facility."
+        tests:
+          - integer:
+              severity: error
+
+      - name: driver_id
+        description: "The driver who completed the trip."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_drivers')
+              field: driver_id
+              severity: error
+
+      - name: truck_id
+        description: "The truck used for the trip."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_trucks')
+              field: truck_id
+              severity: error
+
+      - name: trailer_id
+        description: "The trailer used for the trip."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_trailers')
+              field: trailer_id
+              severity: error
+
+      - name: actual_distance_miles
+        description: "Total miles driven for this trip."
+        tests:
+          - numeric:
+              severity: error
+
+      - name: actual_duration_hours
+        description: "Hours between Pickup (Actual) and Delivery (Actual)."
+        tests:
+          - numeric:
+              severity: error
+
+      - name: customer_id
+        description: "The customer who ordered this shipment."
+        tests:
+          - foreign_key:
+              to: ref('stg_customers')
+              field: customer_id
+              severity: error
+
+      - name: route_id
+        description: "The planned route for this shipment."
+        tests:
+          - foreign_key:
+              to: ref('stg_routes')
+              field: route_id
+              severity: error
+
+      - name: total_revenue
+        description: "Total invoice amount (Base Revenue + Fuel Surcharge + Accessorials)."
+        tests:
+          - numeric:
+              severity: error
+
+      - name: fuel_cost
+        description: "Total fuel cost for the trip from fuel purchase records."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error
+
+      - name: driver_cost
+        description: "Estimated driver cost based on trip duration at $25/hr."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error
+
+      - name: detention_cost
+        description: "Cost of waiting at destination. Calculated at ~$50/hr."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error
+
+      - name: total_cost
+        description: "Sum of all costs: fuel_cost + driver_cost + detention_cost."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error
+
+      - name: total_profit
+        description: "Total profit for the trip: total_revenue - total_cost."
+        tests:
+          - not_null:
+              severity: error
+          - numeric:
+              severity: error

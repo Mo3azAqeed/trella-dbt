@@ -1,0 +1,63 @@
+version: 2
+models:
+  - name: stg_trips
+    description: "Staging model for trips data, transforming raw trip records into a clean format for analysis."
+    columns:
+      - name: trip_id
+        description: "Unique identifier for each trip."
+        tests:
+          - unique
+          - not_null
+      - name: load_id
+        description: "Identifier for the load associated with the trip."
+        tests:
+          - not_null
+      - name: driver_id
+        description: "Identifier for the driver associated with the trip."
+        tests:
+          - not_null
+      - name: truck_id
+        description: "Identifier for the truck used in the trip."
+        tests:
+          - not_null
+      - name: trailer_id
+        description: "Identifier for the trailer used in the trip."
+        tests:
+          - not_null
+      - name: dispatch_date
+        description: "Date when the trip was dispatched."
+        tests:
+          - not_null  
+          - date
+      - name: actual_distance_miles
+        description: "Actual distance covered during the trip, measured in miles."
+        tests:
+          - not_null
+          - numeric
+      - name: actual_duration_hours
+        description: "Actual duration of the trip, measured in hours."
+        tests:
+          - not_null
+          - numeric
+      - name: fuel_gallons_used
+        description: "Amount of fuel consumed during the trip, measured in gallons."
+        tests:
+          - not_null
+          - numeric
+      - name: average_mpg
+        description: "Average miles per gallon for the trip."
+        tests:
+          - not_null
+          - numeric
+      - name: idle_time_hours
+        description: "Total idle time during the trip, measured in hours."
+        tests:
+          - not_null
+          - numeric 
+      - name: trip_status
+        description: "Status of the trip (e.g., completed, in_progress, cancelled)."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Completed', 'In Progress', 'Cancelled']    

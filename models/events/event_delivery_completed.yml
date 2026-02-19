@@ -1,0 +1,16 @@
+version: 2
+models:
+  - name: event_delivery_completed
+    description: "Freight delivered at destination. Marks haul completion and triggers receivables."
+    columns:
+      - name: event_type
+        description: "Type of the event. Always 'delivery_completed'."
+      - name: event_ts
+        description: "Actual datetime when the delivery occurred at the destination facility."
+        tests:
+          - not_null:
+              severity: error
+          - datetime:
+              severity: error
+      - name: event_properties
+        description: "MAP field containing delivery context: load_id, trip_id, facility_id, delivery location, on_time_flag, detention_mins, detention_cost, scheduled/actual delivery times, delivery_variance_hours, driver/truck/trailer IDs, distance, duration, customer_id, route_id, potential_revenue, and financial_total."

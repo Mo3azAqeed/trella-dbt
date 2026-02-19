@@ -1,0 +1,81 @@
+version: 2
+models:
+  - name: stg_safety_incidents
+    description: "Staging model for safety incidents data, transforming raw safety incident records into a clean format for analysis."
+    columns:
+      - name: incident_id
+        description: "Unique identifier for each safety incident."
+        tests:
+          - unique
+          - not_null
+      - name: trip_id
+        description: "Identifier for the trip during which the safety incident occurred."
+        tests:
+          - not_null
+      - name: truck_id
+        description: "Identifier for the truck involved in the safety incident."
+        tests:
+          - not_null
+      - name: driver_id
+        description: "Identifier for the driver involved in the safety incident."
+        tests:
+          - not_null
+      - name: incident_date
+        description: "Date when the safety incident occurred."
+        tests:
+          - not_null  
+          - date
+      - name: incident_type
+        description: "Type of the safety incident (e.g., accident, near_miss, violation)."
+        tests:
+          - not_null  
+          - accepted_values:
+              arguments:
+                values: [Moving Violation, Customer Complaint, Equipment Damage, DOT Violation, Accident, Near Miss]
+
+      - name: location_city
+        description: "City where the safety incident occurred."
+        tests:
+          - not_null  
+      - name: location_state
+        description: "State where the safety incident occurred."
+        tests:
+          - not_null  
+      - name: at_fault_flag
+        description: "Flag indicating if the driver was at fault (1 = yes, 0 = no)."
+        tests:
+          - not_null  
+          - accepted_values:
+              arguments:
+                values: ['TRUE', 'FALSE']
+      - name: injury_flag
+        description: "Flag indicating if there were injuries (1 = yes, 0 = no)."
+        tests:
+          - not_null  
+          - accepted_values:
+              arguments:
+                values: ['TRUE', 'FALSE']
+      - name: vehicle_damage_cost
+        description: "Cost of vehicle damage incurred in the safety incident."
+        tests:
+          - not_null  
+          - numeric
+      - name: cargo_damage_cost
+        description: "Cost of cargo damage incurred in the safety incident."
+        tests:
+          - not_null  
+          - numeric
+      - name: claim_amount
+        description: "Amount claimed for damages in the safety incident."
+        tests:
+          - not_null  
+          - numeric
+      - name: preventable_flag
+        description: "Flag indicating if the safety incident was preventable (1 = yes, 0 = no)."
+        tests:
+          - not_null  
+          - accepted_values:
+              arguments:
+                values: ['TRUE', 'FALSE']
+      - name: description
+        description: "Description of the safety incident."

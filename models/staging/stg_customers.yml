@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Staging model for customers data"
+    columns:
+      - name: customer_id
+        description: "Unique identifier for each customer"
+        tests:
+          - not_null
+          - unique
+      - name: customer_name
+        description: "Name of the customer"
+        tests:
+          - not_null
+      - name: customer_type
+        description: "Type of the customer (e.g., Dedicated, Contract, Spot)"
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Dedicated', 'Contract', 'Spot']
+      - name : credit_terms_days
+        description: "Number of days for credit terms"
+        tests:
+          - not_null
+          - integer
+      - name: primary_freight_type
+        description: "Primary freight type of the customer"
+        tests:
+          - not_null
+      - name: account_status
+        description: "Status of the customer's account (e.g., Active, Inactive)"
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Active', 'Inactive']
+      - name: contract_start_date 
+        description: "Start date of the customer's contract"
+        tests:
+          - not_null
+          - date
+      - name: annual_revenue_potential
+        description: "Estimated annual revenue potential from the customer"
+        tests:
+          - not_null
+          - numeric

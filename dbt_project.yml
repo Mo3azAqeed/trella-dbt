@@ -1,0 +1,60 @@
+
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'trella'
+version: '1.0.0'
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'trella'
+
+# These configurations specify where dbt should look for different types of files.
+# The `model-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+on-run-start:
+  - "CREATE SCHEMA IF NOT EXISTS raw_csv"
+  - "CREATE OR REPLACE VIEW raw_csv.customers AS SELECT * FROM read_csv_auto('/home/moaz/env/sources/customers.csv')"
+  - "CREATE OR REPLACE VIEW raw_csv.delivery_events AS SELECT * FROM read_csv_auto('/home/moaz/env/sources/delivery_events.csv')"
+  - "CREATE OR REPLACE VIEW raw_csv.driver_monthly_metrics AS SELECT * FROM read_csv_auto('/home/moaz/env/sources/driver_monthly_metrics.csv')"
+  - "CREATE OR REPLACE VIEW raw_csv.drivers AS SELECT * FROM read_csv_auto('/home/moaz/env/sources/drivers.csv')"
+  - "CREATE OR REPLACE VIEW raw_csv.facilities AS SELECT * FROM read_csv_auto('/home/moaz/env/sources/facilities.csv')"
+  - "CREATE OR REPLACE VIEW raw_csv.fuel_purchases AS SELECT * FROM read_csv_auto('/home/moaz/env/sources/fuel_purchases.csv')"
+  - "CREATE OR REPLACE VIEW raw_csv.loads AS SELECT * FROM read_csv_auto('/home/moaz/env/sources/loads.csv')"
+  - "CREATE OR REPLACE VIEW raw_csv.maintenance_records AS SELECT * FROM read_csv_auto('/home/moaz/env/sources/maintenance_records.csv')"
+  - "CREATE OR REPLACE VIEW raw_csv.routes AS SELECT * FROM read_csv_auto('/home/moaz/env/sources/routes.csv')"
+  - "CREATE OR REPLACE VIEW raw_csv.safety_incidents AS SELECT * FROM read_csv_auto('/home/moaz/env/sources/safety_incidents.csv')"
+  - "CREATE OR REPLACE VIEW raw_csv.trailers AS SELECT * FROM read_csv_auto('/home/moaz/env/sources/trailers.csv')"
+  - "CREATE OR REPLACE VIEW raw_csv.trips AS SELECT * FROM read_csv_auto('/home/moaz/env/sources/trips.csv')"
+  - "CREATE OR REPLACE VIEW raw_csv.truck_utilization_metrics AS SELECT * FROM read_csv_auto('/home/moaz/env/sources/truck_utilization_metrics.csv')"
+  - "CREATE OR REPLACE VIEW raw_csv.trucks AS SELECT * FROM read_csv_auto('/home/moaz/env/sources/trucks.csv')"
+
+
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+
+# In this example config, we tell dbt to build all models in the example/
+# directory as views. These settings can be overridden in the individual model
+# files using the `{{ config(...) }}` macro.
+models:
+  trella:
+    # Config indicated by + and applies to all files under models/example/
+    staging:
+      +materialized: table
+    intermediate:
+      +materialized: incremental
+      +incremental_strategy: append
+    events:
+      +materialized: view
+
+          

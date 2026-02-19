@@ -1,0 +1,16 @@
+version: 2
+models:
+  - name: event_trip_started
+    description: "Driver arrives at origin and begins the journey. Represents the start of variable costs."
+    columns:
+      - name: event_type
+        description: "Type of the event. Always 'trip_started'."
+      - name: event_ts
+        description: "Actual datetime of the pickup event — when the driver physically arrived at origin and started the trip."
+        tests:
+          - not_null:
+              severity: error
+          - datetime:
+              severity: error
+      - name: event_properties
+        description: "MAP field containing trip context: trip_id, load_id, route_id, driver_id, truck_id, trailer_id, origin details, potential_revenue, estimated/actual arrival times, pickup detention minutes, and on-time flag."

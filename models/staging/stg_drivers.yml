@@ -1,0 +1,59 @@
+version: 2
+models:
+  - name: stg_drivers
+    description: "Staging model for drivers data, transforming raw driver records into a clean format for analysis."
+    columns:
+      - name: driver_id
+        description: "Unique identifier for each driver."
+        tests:
+          - unique
+          - not_null
+      - name: first_name
+        description: "Driver's first name."
+        tests:
+          - not_null
+      - name: last_name
+        description: "Driver's last name."
+        tests:
+          - not_null
+      - name: hire_date
+        description: "Date when the driver was hired."
+        tests:
+          - not_null  
+          - date
+      - name: termination_date
+        description: "Date when the driver was terminated (if applicable)."
+        tests:
+          - date
+      - name: license_number
+        description: "Driver's license number."
+        tests:
+          - not_null
+      - name: license_state
+        description: "State that issued the driver's license."
+        tests:
+          - not_null
+      - name: date_of_birth
+        description: "Driver's date of birth."
+        tests:
+          - not_null  
+          - date
+      - name: home_terminal
+        description: "The home terminal assigned to the driver."
+        tests:
+          - not_null
+      - name: employment_status
+        description: "Current employment status of the driver (e.g., active, inactive)."
+        tests:
+          - not_null  
+          - accepted_values:
+              arguments:
+                values: ['Active', 'Terminated']
+      - name: cdl_class
+        description: "Class of the driver's commercial driver's license."
+        tests:
+          - not_null  
+      - name: years_experience
+        description: "Number of years of driving experience for the driver."
+        tests:
+          - not_null

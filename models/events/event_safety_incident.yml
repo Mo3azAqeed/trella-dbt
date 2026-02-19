@@ -1,0 +1,16 @@
+version: 2
+models:
+  - name: event_safety_incident
+    description: "A safety incident occurred during a trip. Includes damage costs and whether the trip is still profitable after the incident."
+    columns:
+      - name: event_type
+        description: "Type of the event. Always 'safety_incident'."
+      - name: event_ts
+        description: "Datetime when the safety incident occurred."
+        tests:
+          - not_null:
+              severity: error
+          - datetime:
+              severity: error
+      - name: event_properties
+        description: "MAP field containing incident context: incident_id, incident_type, location, truck/driver IDs, fault/injury/preventable flags, vehicle_damage_cost, cargo_damage_cost, total_damage_cost, claim_amount, load_id, customer_id, route_id, trip_total_revenue, revenue_after_damage, and is_trip_still_profitable."

@@ -1,0 +1,16 @@
+version: 2
+models:
+  - name: event_trip_ended
+    description: "Trip completed — freight delivered at destination with confirmed actual time. Includes total cost and profit."
+    columns:
+      - name: event_type
+        description: "Type of the event. Always 'trip_ended'."
+      - name: event_ts
+        description: "Actual datetime when the delivery occurred and the trip ended."
+        tests:
+          - not_null:
+              severity: error
+          - datetime:
+              severity: error
+      - name: event_properties
+        description: "MAP field containing trip completion context: load_id, facility_id, delivery location, on_time_flag, detention_minutes, driver/truck/trailer IDs, actual_distance_miles, actual_duration_hours, customer_id, route_id, total_revenue, fuel_cost, driver_cost, detention_cost, total_cost, and total_profit."

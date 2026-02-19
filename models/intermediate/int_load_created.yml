@@ -1,0 +1,82 @@
+version: 2
+# Event Description: A new freight load is booked and entered into the system.
+# Fire At: Triggered when a new record is inserted into the LOADS table.
+#This Is The Base Model 
+models: 
+  - name: int_load_created
+    description: "A new freight load is booked and entered into the system."
+    columns:
+      - name: load_id
+        description: "Unique identifier for the shipment."
+        tests:
+          - unique:
+              severity: error
+          - not_null:
+              severity: error    
+      - name: created_at
+        description: "Timestamp when the load record was created."
+        tests:
+          - not_null:
+              severity: error
+          - datetime:
+              severity: error
+      - name: trip_id
+        description: "Identifier for the trip associated with the load."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_trips')
+              field: trip_id
+              severity: error
+      - name: customer_id
+        description: "Identifier for the customer associated with the load"
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_customers')
+              field: customer_id
+              severity: error
+      - name: route_id
+        description: "Foreign key to the planned route."
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_routes')
+              field: route_id
+              severity: error
+      - name: facility_id
+        description: "Identifier for the facility associated with the load"
+        tests:
+          - not_null:
+              severity: error
+          - foreign_key:
+              to: ref('stg_facilities')
+              field: facility_id
+              severity: error
+      - name: booking_channel
+        description: "Channel through which the load was booked (e.g.Spot,Dedicated)"
+      - name: equipment_required
+        description: "Type of equipment required for the load (e.g. Dry Van, Reefer, Flatbed)"
+      - name: financial_base
+        description: "Base Linehaul Revenue. EXCLUDES fuel and accessorials. Used for true margin analysis."
+      - name: financial_extras
+        description: "Sum of Fuel Surcharge + Accessorials. Represents pass-through costs."
+      - name: financial_total
+        description: "Total Invoice Amount (Base + Extras). Used for Top-Line reporting."
+        tests:
+          - financial_total_check:
+              severity: error
+      - name: route_distance
+        description: "Typical mileage for this route (from stg_routes). Denominator for RPM."
+      - name: actual_rpm
+        description: "Performance Metric: (financial_base / route_distance). Measures negotiation quality independent of fuel prices."
+        tests:
+          - not_null:
+              severity: error
+      - name: benchmark_rpm
+        description: "Target Rate: The standard base rate for this route (from stg_routes). Used to calculate variance."
+      - name: rpm_variance
+        description: "Performance Metric: (actual_rpm - benchmark_rpm). Positive = Good Deal; Negative = Bad Deal."
